@@ -23,13 +23,15 @@ struct compare
 class Huffencode
 {
 private:
+    
+
+public:
+    std::unordered_map<char, int> fTable;
     string iFile;
     string oFile;
-    std::unordered_map<char, int> fTable;
     std::unordered_map<char, string> codeTableMap;
     std::shared_ptr<HuffmanNode> root;
 
-public:
     //default const
     Huffencode();
     //default argument passed const
@@ -42,6 +44,8 @@ public:
     Huffencode(Huffencode &&rhs);
     //reading in the char into a frequency table
     void readFile();
+    //OVERLOADED METHOD FOR UNIT TESTING
+    void readFile(string in);
     //copy assignment operator
     Huffencode &operator=(const Huffencode &rhs);
     //move assignment operator

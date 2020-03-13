@@ -8,6 +8,8 @@
 using namespace std;
 namespace THNGEO002
 {
+Huffencode::Huffencode()
+{}
 //constructor
 Huffencode::Huffencode(string inF, string outF)
 {
@@ -27,6 +29,17 @@ Huffencode::Huffencode(string inF, string outF)
     this->root=huffmanTreeBuilder(priorityq);
     codeTable(root,"");
     writeFile();
+    string hdr=oFile.erase(oFile.size()-4)+".hdr";
+
+    std::ofstream out(hdr);
+    for(auto& x:codeTableMap){
+        out<<x.first<<" "<<x.second<<endl;
+        
+    }
+    fstream finCheck(iFile, fstream::in);
+    fstream foutCheck(oFile, fstream::in);
+    cout<<"Size of input file is: "<<sizeof(finCheck)<<endl;
+    cout<<"Size of output file is: "<<sizeof(foutCheck)<<endl;
     
 }
 //destructor
@@ -81,7 +94,27 @@ void Huffencode::readFile()
         }
     }
 }
+//OVERLOADED METHOD FOR UNIT TESTING
+void Huffencode::readFile(string ina)
+{
+    char ch;
+    int count = 0;
+    fstream fin(ina, fstream::in);
+    while (fin.get(ch))
+    {
 
+        if (fTable.find(ch) == fTable.end())
+        {
+            fTable[ch] = 1;
+        }
+        else
+        {
+            int inc = fTable.at(ch);
+            inc++;
+            fTable[ch] = inc;
+        }
+    }
+}
 //Huffman tree builder method that returns a pointer to the parent huffman node
 shared_ptr<HuffmanNode> Huffencode::huffmanTreeBuilder(priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>, compare>& pQ){
     
@@ -134,7 +167,7 @@ void Huffencode::writeFile(){
     while (fin.get(ch))
     {
 
-        for (auto x : codeTableMap) 
+        for (auto& x : codeTableMap) 
     { 
         if(x.first==ch){
             bitRep+=x.second;
@@ -146,6 +179,7 @@ void Huffencode::writeFile(){
     std::ofstream out(oFile);
     out<<bitRep;
     out.close();
+    
 }
 
 } // namespace THNGEO002
