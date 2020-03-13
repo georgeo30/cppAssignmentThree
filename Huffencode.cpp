@@ -18,8 +18,10 @@ Huffencode::Huffencode(string inF, string outF)
     for (auto x : fTable) 
     { 
         priorityq.push(shared_ptr<HuffmanNode> (new HuffmanNode(x.first,x.second)));
-       // cout<<priorityq.size<<endl;
+        //calling the method to build the tree
     }
+            this->root=huffmanTreeBuilder(priorityq);
+
     
 }
 //destructor
@@ -52,6 +54,41 @@ Huffencode &Huffencode::operator=(const Huffencode &&rhs)
     this->fTable = move(rhs.fTable);
     return *this;
 }
+
+//Huffman tree builder method that returns a pointer to the parent huffman node
+shared_ptr<HuffmanNode> Huffencode::huffmanTreeBuilder(priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>, compare>& pQ){
+    
+    //automatically deletes the tree node representation
+    shared_ptr<HuffmanNode> pNode=nullptr;
+
+    //the tree will now loop through all the nodes and allocate the left and right nodes until there is only one node left onthe tree.
+    while(pQ.size()>1){
+        //leftnode
+        shared_ptr<HuffmanNode> leftP=pQ.top();
+        //removing the node
+        pQ.pop();
+        //rightnode
+        shared_ptr<HuffmanNode> rightP=pQ.top();
+        //removing the node
+        pQ.pop();
+        //adding the frequency of both the nodes (left and right) to the parent node
+        int pFreq;
+        pFreq=(*rightP).getF() + (*leftP).getF();
+        //setting the parent node frequency
+        pNode.reset(new HuffmanNode('\0',pFreq));
+        //parents left child is set
+        pNode->left=leftP;
+        //parents right child is set
+        pNode->right=rightP;
+        //pushing back the parentNode to the priority queue
+        pQ.push(pNode);
+
+    }
+    //returns the root node
+    return pNode;
+
+}
+
 
 //reading file into unorderedMap
 void Huffencode::readFile()
