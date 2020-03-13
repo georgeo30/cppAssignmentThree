@@ -20,7 +20,8 @@ Huffencode::Huffencode(string inF, string outF)
         priorityq.push(shared_ptr<HuffmanNode> (new HuffmanNode(x.first,x.second)));
         //calling the method to build the tree
     }
-            this->root=huffmanTreeBuilder(priorityq);
+    this->root=huffmanTreeBuilder(priorityq);
+    codeTable(root,"");
 
     
 }
@@ -88,7 +89,15 @@ shared_ptr<HuffmanNode> Huffencode::huffmanTreeBuilder(priority_queue<shared_ptr
     return pNode;
 
 }
-
+//creating the code table
+void Huffencode::codeTable(shared_ptr<HuffmanNode> r,string str){
+    //adding a zero the the stream if the traversal is to the right
+    if(r->left!=nullptr){codeTable(r->left,str+"0");}
+    //inserting the stream of bits and its character to the codeTableMap
+    this->codeTableMap.insert({(*r).getCh(),str});
+    //adding a one to the stream if the traversal is to the left
+    if(r->right!=nullptr){codeTable(r->right,str+"1");}
+}
 
 //reading file into unorderedMap
 void Huffencode::readFile()

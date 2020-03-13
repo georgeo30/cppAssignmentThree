@@ -7,6 +7,8 @@
 #include <sstream>
 #include <unordered_map>
 #include "HuffmanNode.h"
+#include <queue>
+
 
 namespace THNGEO002
 {
@@ -24,6 +26,7 @@ private:
     string iFile;
     string oFile;
     std::unordered_map<char, int> fTable;
+    std::unordered_map<char, string> codeTableMap;
     std::shared_ptr<HuffmanNode> root;
 
 public:
@@ -43,6 +46,11 @@ public:
     Huffencode &operator=(const Huffencode &rhs);
     //move assignment operator
     Huffencode &operator=(const Huffencode &&rhs);
+    //method to build a huffman tree
+    shared_ptr<HuffmanNode> huffmanTreeBuilder(priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>, compare>& pQ);
+    //building the code table
+    void codeTable(shared_ptr<HuffmanNode> r,string str);
+
 };
 
 } // namespace THNGEO002
