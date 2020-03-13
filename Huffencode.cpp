@@ -13,16 +13,20 @@ Huffencode::Huffencode(string inF, string outF)
 {
     iFile = inF + ".txt";
     oFile = outF + ".txt";
+    //reading the file into an unordered map
     readFile();
+    //setting up the priority queue
     std::priority_queue<shared_ptr<HuffmanNode>, vector<shared_ptr<HuffmanNode>>, compare> priorityq;
+    //pushing the elements from the uunordered map into the priority queue
     for (auto x : fTable) 
     { 
         priorityq.push(shared_ptr<HuffmanNode> (new HuffmanNode(x.first,x.second)));
-        //calling the method to build the tree
     }
+
+    //calling the method to build the tree
     this->root=huffmanTreeBuilder(priorityq);
     codeTable(root,"");
-
+    writeFile();
     
 }
 //destructor
@@ -54,6 +58,28 @@ Huffencode &Huffencode::operator=(const Huffencode &&rhs)
     this->root = move(rhs.root);
     this->fTable = move(rhs.fTable);
     return *this;
+}
+
+//reading file into unorderedMap
+void Huffencode::readFile()
+{
+    char ch;
+    int count = 0;
+    fstream fin(iFile, fstream::in);
+    while (fin.get(ch))
+    {
+
+        if (fTable.find(ch) == fTable.end())
+        {
+            fTable[ch] = 1;
+        }
+        else
+        {
+            int inc = fTable.at(ch);
+            inc++;
+            fTable[ch] = inc;
+        }
+    }
 }
 
 //Huffman tree builder method that returns a pointer to the parent huffman node
@@ -99,27 +125,27 @@ void Huffencode::codeTable(shared_ptr<HuffmanNode> r,string str){
     if(r->right!=nullptr){codeTable(r->right,str+"1");}
 }
 
-//reading file into unorderedMap
-void Huffencode::readFile()
-{
+
+//converting each char from the input file to a bit representation and writing this output a file
+void Huffencode::writeFile(){
     char ch;
-    int count = 0;
+    string bitRep;
     fstream fin(iFile, fstream::in);
     while (fin.get(ch))
     {
 
-        if (fTable.find(ch) == fTable.end())
-        {
-            fTable[ch] = 1;
-        }
-        else
-        {
-            int inc = fTable.at(ch);
-            inc++;
-            fTable[ch] = inc;
+        for (auto x : codeTableMap) 
+    { 
+        if(x.first==ch){
+            bitRep+=x.second;
         }
     }
+        
+        
+    }
+    std::ofstream out(oFile);
+    out<<bitRep;
+    out.close();
 }
-
 
 } // namespace THNGEO002
