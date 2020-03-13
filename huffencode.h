@@ -18,7 +18,7 @@ class Huffencode
 private:
     string iFile;
     string oFile;
-    unordered_map<char, int> fTable;
+    std::unordered_map<char, int> fTable;
     std::shared_ptr<HuffmanNode> root;
 
 public:          
@@ -31,9 +31,13 @@ public:
     //copy const
     Huffencode(const Huffencode& rhs);
     //move constructor
-    Huffencode(const Huffencode&& rhs);
+    Huffencode( Huffencode&& rhs);
     //reading in the char into a frequency table
     void readFile(); 
+    //copy assignment operator
+    Huffencode& operator=(const Huffencode& rhs);
+    //move assignment operator
+    Huffencode& operator=(const Huffencode&& rhs);
 
 
 

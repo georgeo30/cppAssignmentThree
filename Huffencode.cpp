@@ -28,7 +28,18 @@ Huffencode::Huffencode( Huffencode&& rhs):root(new HuffmanNode(*rhs.root)){
     rhs.root.reset();
     rhs.fTable.clear();
 }
-
+//copy assignment operator
+Huffencode &Huffencode::operator=(const Huffencode& rhs){
+    this->fTable=rhs.fTable;
+    root.operator=(rhs.root);
+    return *this;
+}
+//movve assignment operator
+Huffencode &Huffencode::operator=(const Huffencode&& rhs){
+    this->root=move(rhs.root);
+    this->fTable=move(rhs.fTable);
+    return *this;
+}
 //reading file into unorderedMap
 void Huffencode::readFile()
 {
