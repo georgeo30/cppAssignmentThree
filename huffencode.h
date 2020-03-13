@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <unordered_map> 
+#include "HuffmanNode.h"
 
 
 namespace THNGEO002
@@ -17,11 +18,24 @@ class Huffencode
 private:
     string iFile;
     string oFile;
-    unordered_map<char, int> fTable;                                  
-public:                                   
-    Huffencode(string inF,string outF);                           
+    unordered_map<char, int> fTable;
+    std::shared_ptr<HuffmanNode> root;
+
+public:          
+    //default const    
+    Huffencode();     
+    //default argument passed const                
+    Huffencode(string inF,string outF);            
+    //destructor               
     ~Huffencode();
-    void readFile();                          
+    //copy const
+    Huffencode(const Huffencode& rhs);
+    //move constructor
+    Huffencode(const Huffencode&& rhs);
+    //reading in the char into a frequency table
+    void readFile(); 
+
+
 
 };
 
