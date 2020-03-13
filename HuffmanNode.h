@@ -34,8 +34,11 @@ public:
     HuffmanNode& operator=(const HuffmanNode && rhs);
     //compare perator
     bool operator<(const HuffmanNode &rhs)const;
-    int getFrequency() const;
-    char getLetter() const;
+    //returns the char 
+    char getCh() const;
+    //returns the frequency number
+    int getF() const;
+    
 
 
 

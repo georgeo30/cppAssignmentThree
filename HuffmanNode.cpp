@@ -48,7 +48,19 @@ HuffmanNode &HuffmanNode::operator=(const HuffmanNode &&rhs)
     this->frequency = move(rhs.frequency);
 }
 //compare operator
-bool HuffmanNode::operator<(const HuffmanNode& rhs)const{
-    return(this->frequency<rhs.frequency());
+bool HuffmanNode::operator<(const HuffmanNode &rhs) const
+{
+    return (this->frequency < rhs.getF());
 }
+//returns the char
+char HuffmanNode::getCh() const
+{
+    return ch;
+}
+//returns the frequency number
+int HuffmanNode::getF() const
+{
+    return frequency;
+}
+
 } // namespace THNGEO002
