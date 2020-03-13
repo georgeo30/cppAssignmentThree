@@ -12,7 +12,6 @@ int main(int argc, char *argv[])
         iFile=argv[1];
         oFile=argv[2];
         THNGEO002::Huffencode h(iFile,oFile);
-        h.readFile();
         
     }
 
