@@ -54,8 +54,10 @@ public:
     shared_ptr<HuffmanNode> huffmanTreeBuilder(priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>, compare>& pQ);
     //building the code table
     void codeTable(shared_ptr<HuffmanNode> r,string str);
-    //CONVERTING EACH CHAR IN STRING TO A BIT REPRESENTATION AND WRITING THIS TO THE OUTPUT FILE
+    //converting each chat into a bit stream and writing this out to the output file
     void writeFile();
+    //OVERLOADED METHOD FOR CONVERTING EACH CHAR INTO A BIT STREAM FOR UNIT TESTING
+    string writeFile(string unitTestFile);
 
 };
 

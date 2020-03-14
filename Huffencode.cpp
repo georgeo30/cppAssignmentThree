@@ -181,5 +181,25 @@ void Huffencode::writeFile(){
     out.close();
     
 }
+//OVERLOADED METHOD FOR UNIT TESTING
+string Huffencode::writeFile(string unitTestFile){
+    char ch;
+    string bitRep;
+    fstream fin(unitTestFile, fstream::in);
+    while (fin.get(ch))
+    {
+
+        for (auto& x : codeTableMap) 
+    { 
+        if(x.first==ch){
+            bitRep+=x.second;
+        }
+    }
+        
+        
+    }
+   return bitRep;
+    
+}
 
 } // namespace THNGEO002
