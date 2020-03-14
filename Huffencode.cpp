@@ -9,7 +9,8 @@ using namespace std;
 namespace THNGEO002
 {
 Huffencode::Huffencode()
-{}
+{
+}
 //constructor
 Huffencode::Huffencode(string inF, string outF)
 {
@@ -20,27 +21,27 @@ Huffencode::Huffencode(string inF, string outF)
     //setting up the priority queue
     std::priority_queue<shared_ptr<HuffmanNode>, vector<shared_ptr<HuffmanNode>>, compare> priorityq;
     //pushing the elements from the uunordered map into the priority queue
-    for (auto x : fTable) 
-    { 
-        priorityq.push(shared_ptr<HuffmanNode> (new HuffmanNode(x.first,x.second)));
+    for (auto x : fTable)
+    {
+        priorityq.push(shared_ptr<HuffmanNode>(new HuffmanNode(x.first, x.second)));
     }
 
     //calling the method to build the tree
-    this->root=huffmanTreeBuilder(priorityq);
-    codeTable(root,"");
+    this->root = huffmanTreeBuilder(priorityq);
+    codeTable(root, "");
     writeFile();
-    string hdr=oFile.erase(oFile.size()-4)+".hdr";
+    string hdr = oFile.erase(oFile.size() - 4) + ".hdr";
 
     std::ofstream out(hdr);
-    for(auto& x:codeTableMap){
-        out<<x.first<<" "<<x.second<<endl;
-        
+    for (auto &x : codeTableMap)
+    {
+        out << x.first << " " << x.second << endl;
     }
-    fstream finCheck(iFile, fstream::in);
-    fstream foutCheck(oFile, fstream::in);
-    cout<<"Size of input file is: "<<sizeof(finCheck)<<endl;
-    cout<<"Size of output file is: "<<sizeof(foutCheck)<<endl;
-    
+
+    cout << "Size of input file is: " << inSizeBit << endl;
+    cout << "Size of output file is: " << outSizeBit << endl;
+    cout << "Compression ratio is: " << (float)outSizeBit / (float)inSizeBit << endl;
+    cout<< "Compressed file is in "<<oFile<<".txt and code table is in "<<hdr<<endl;
 }
 //destructor
 Huffencode::~Huffencode()
@@ -78,10 +79,11 @@ void Huffencode::readFile()
 {
     char ch;
     int count = 0;
+
     fstream fin(iFile, fstream::in);
     while (fin.get(ch))
     {
-
+        inSizeBit += sizeof(ch);
         if (fTable.find(ch) == fTable.end())
         {
             fTable[ch] = 1;
@@ -116,90 +118,97 @@ void Huffencode::readFile(string ina)
     }
 }
 //Huffman tree builder method that returns a pointer to the parent huffman node
-shared_ptr<HuffmanNode> Huffencode::huffmanTreeBuilder(priority_queue<shared_ptr<HuffmanNode>,vector<shared_ptr<HuffmanNode>>, compare>& pQ){
-    
+shared_ptr<HuffmanNode> Huffencode::huffmanTreeBuilder(priority_queue<shared_ptr<HuffmanNode>, vector<shared_ptr<HuffmanNode>>, compare> &pQ)
+{
+
     //automatically deletes the tree node representation
-    shared_ptr<HuffmanNode> pNode=nullptr;
+    shared_ptr<HuffmanNode> pNode = nullptr;
 
     //the tree will now loop through all the nodes and allocate the left and right nodes until there is only one node left onthe tree.
-    while(pQ.size()>1){
+    while (pQ.size() > 1)
+    {
         //leftnode
-        shared_ptr<HuffmanNode> leftP=pQ.top();
+        shared_ptr<HuffmanNode> leftP = pQ.top();
         //removing the node
         pQ.pop();
         //rightnode
-        shared_ptr<HuffmanNode> rightP=pQ.top();
+        shared_ptr<HuffmanNode> rightP = pQ.top();
         //removing the node
         pQ.pop();
         //adding the frequency of both the nodes (left and right) to the parent node
         int pFreq;
-        pFreq=(*rightP).getF() + (*leftP).getF();
+        pFreq = (*rightP).getF() + (*leftP).getF();
         //setting the parent node frequency
-        pNode.reset(new HuffmanNode('\0',pFreq));
+        pNode.reset(new HuffmanNode('\0', pFreq));
         //parents left child is set
-        pNode->left=leftP;
+        pNode->left = leftP;
         //parents right child is set
-        pNode->right=rightP;
+        pNode->right = rightP;
         //pushing back the parentNode to the priority queue
         pQ.push(pNode);
-
     }
     //returns the root node
     return pNode;
-
 }
 //creating the code table
-void Huffencode::codeTable(shared_ptr<HuffmanNode> r,string str){
+void Huffencode::codeTable(shared_ptr<HuffmanNode> r, string str)
+{
     //adding a zero the the stream if the traversal is to the right
-    if(r->left!=nullptr){codeTable(r->left,str+"0");}
+    if (r->left != nullptr)
+    {
+        codeTable(r->left, str + "0");
+    }
     //inserting the stream of bits and its character to the codeTableMap
-    this->codeTableMap.insert({(*r).getCh(),str});
+    this->codeTableMap.insert({(*r).getCh(), str});
     //adding a one to the stream if the traversal is to the left
-    if(r->right!=nullptr){codeTable(r->right,str+"1");}
+    if (r->right != nullptr)
+    {
+        codeTable(r->right, str + "1");
+    }
 }
 
-
 //converting each char from the input file to a bit representation and writing this output a file
-void Huffencode::writeFile(){
+void Huffencode::writeFile()
+{
     char ch;
     string bitRep;
+
     fstream fin(iFile, fstream::in);
     while (fin.get(ch))
     {
 
-        for (auto& x : codeTableMap) 
-    { 
-        if(x.first==ch){
-            bitRep+=x.second;
+        for (auto &x : codeTableMap)
+        {
+            if (x.first == ch)
+            {
+                bitRep += x.second;
+            }
         }
     }
-        
-        
-    }
+    outSizeBit = sizeof(bitRep);
+
     std::ofstream out(oFile);
-    out<<bitRep;
+    out << bitRep;
     out.close();
-    
 }
 //OVERLOADED METHOD FOR UNIT TESTING
-string Huffencode::writeFile(string unitTestFile){
+string Huffencode::writeFile(string unitTestFile)
+{
     char ch;
     string bitRep;
     fstream fin(unitTestFile, fstream::in);
     while (fin.get(ch))
     {
 
-        for (auto& x : codeTableMap) 
-    { 
-        if(x.first==ch){
-            bitRep+=x.second;
+        for (auto &x : codeTableMap)
+        {
+            if (x.first == ch)
+            {
+                bitRep += x.second;
+            }
         }
     }
-        
-        
-    }
-   return bitRep;
-    
+    return bitRep;
 }
 
 } // namespace THNGEO002

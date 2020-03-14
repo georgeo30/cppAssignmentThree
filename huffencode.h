@@ -31,6 +31,8 @@ public:
     string oFile;
     std::unordered_map<char, string> codeTableMap;
     std::shared_ptr<HuffmanNode> root;
+    int inSizeBit=0;
+    int outSizeBit=0;
 
     //default const
     Huffencode();
